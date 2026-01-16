@@ -1,0 +1,37 @@
+Layer,POC Technology,MVP Technology,Purpose,License,POC Cost,MVP Cost
+Infrastructure,OpenTofu,OpenTofu,Provision infrastructure,MPL 2.0 (Open),Free,Free
+Infrastructure,Local laptop,Google Cloud Platform,Hosting platform,N/A,Free,Pay-as-you-go
+Containers,Docker,Docker,Package all services,Apache 2.0,Free,Free
+Containers,Docker Compose,Cloud Run,Container orchestration,Apache 2.0,Free,~$200-500/mo
+Containers,Local registry,Artifact Registry,Store Docker images,N/A,Free,~$10/mo
+Backend,FastAPI (Python 3.11+),FastAPI (Python 3.11+),REST APIs,MIT,Free,Free
+Backend,LangGraph,LangGraph,Multi-step AI workflows,Apache 2.0,Free,Free
+Backend,None (direct),Cloud Endpoints,API Gateway auth/rate limiting,N/A,Free,Pay-per-call
+Frontend,Next.js 14+ (React),Next.js 14+ (React),Web application,MIT,Free,Free
+Frontend,Node.js 18+,Node.js 18+,JavaScript execution,MIT,Free,Free
+Frontend,None (localhost),Cloud CDN,Global content delivery,N/A,Free,Pay-per-GB
+AI/ML,Claude 3.5 Sonnet,Claude 3.5 Sonnet,Clinical reasoning,Proprietary,~$3/M tokens,~$3/M tokens
+AI/ML,Gemini 1.5 Pro,Gemini 1.5 Pro,Multimodal fast inference,Proprietary,~$1/M tokens,~$1/M tokens
+AI/ML,Qdrant (open source),Vertex AI Vector Search,Semantic search / RAG,Apache 2.0,Free,~$0.30/GB/mo
+AI/ML,text-embedding-3,text-embedding-3,Generate vectors,N/A,~$0.13/M tokens,~$0.13/M tokens
+Data Storage,HAPI FHIR (open source),Healthcare API (FHIR R4),FHIR server,Apache 2.0,Free,~$0.05/GB/mo
+Data Storage,PostgreSQL 15 (Docker),Cloud SQL (PostgreSQL 15),Application database,PostgreSQL,Free,~$50/mo
+Data Storage,Redis 7 (Docker),Memorystore (Redis 7),Session + API cache,BSD,Free,~$40/mo
+Data Storage,Local volumes,Cloud Storage,Documents and images,N/A,Free,~$0.02/GB/mo
+Data Storage,PostgreSQL,BigQuery,Analytics warehouse,N/A,Free,Pay-per-query
+Message Queue,RabbitMQ (Docker),RabbitMQ / Pub/Sub,Async processing,MPL 2.0,Free,Free / Pay-per-use
+Public APIs,RxNorm API (NIH),RxNorm API (NIH),Drug normalization,Public Domain,FREE,FREE
+Public APIs,PubMed E-utilities (NIH),PubMed E-utilities (NIH),35M+ medical articles,Public Domain,FREE,FREE
+Public APIs,UMLS API (NIH),UMLS API (NIH),ICD-10 SNOMED LOINC,Public Domain,FREE,FREE
+Public APIs,FDA Drug Label API,FDA Drug Label API,Drug warnings/interactions,Public Domain,FREE,FREE
+Security,Environment variables,Secret Manager,API keys and credentials,N/A,Free,~$0.06/secret
+Security,N/A (dev only),Cloud KMS,Customer-managed encryption keys,N/A,N/A,~$1/key/mo
+Security,N/A (dev only),Cloud DLP,PHI detection and redaction,N/A,N/A,~$1/1K items
+Security,N/A (dev only),Cloud Armor,WAF and DDoS protection,N/A,N/A,~$5/mo
+Security,N/A (dev only),Cloud IAM,Access control,N/A,N/A,Free
+Observability,Docker logs,Cloud Logging,Centralized logs,N/A,Free,~$0.50/GB
+Observability,Prometheus + Grafana,Prometheus + Grafana,Metrics and dashboards,Apache 2.0,Free,Free (self-hosted)
+Observability,Jaeger (optional),Cloud Trace,Distributed tracing,Apache 2.0,Free,~$0.20/M spans
+CI/CD,GitHub,GitHub,Version control,N/A,Free,Free
+CI/CD,Local builds,Cloud Build,Automated builds,N/A,Free,120 min/day free
+CI/CD,pytest + Jest,pytest + Jest,Unit/integration tests,MIT,Free,Free
