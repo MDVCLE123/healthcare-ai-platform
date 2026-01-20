@@ -1,0 +1,141 @@
+version: '3.8'
+
+services:
+  # Backend API
+  api:
+    build: ./backend
+    container_name: healthcare-ai-api
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/healthcare_ai
+      - REDIS_URL=redis://redis:6379
+      - FHIR_URL=http://hapi-fhir:8080/fhir
+      - QDRANT_URL=http://qdrant:6333
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - ENVIRONMENT=development
+    depends_on:
+      - postgres
+      - redis
+      - hapi-fhir
+      - qdrant
+    volumes:
+      - ./backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+  
+  # Frontend
+  frontend:
+    build: ./frontend
+    container_name: healthcare-ai-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - api
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+  
+  # FHIR Server (replaces Healthcare API)
+  hapi-fhir:
+    image: hapiproject/hapi:latest
+    container_name: healthcare-ai-fhir
+    ports:
+      - "8080:8080"
+    environment:
+      - hapi.fhir.fhir_version=R4
+      - spring.datasource.url=jdbc:postgresql://postgres:5432/hapi
+      - spring.datasource.username=postgres
+      - spring.datasource.password=password
+      - spring.jpa.hibernate.ddl-auto=update
+    depends_on:
+      - postgres
+  
+  # PostgreSQL (replaces Cloud SQL)
+  postgres:
+    image: postgres:15-alpine
+    container_name: healthcare-ai-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=healthcare_ai
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  # Redis (replaces Memorystore)
+  redis:
+    image: redis:7-alpine
+    container_name: healthcare-ai-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+  
+  # Vector Database (replaces Vertex AI Vector Search)
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: healthcare-ai-qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant-data:/qdrant/storage
+  
+  # Message Queue
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: healthcare-ai-rabbitmq
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # Management UI
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=password
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+  
+  # Monitoring - Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: healthcare-ai-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+  
+  # Monitoring - Grafana
+  grafana:
+    image: grafana/grafana:latest
+    container_name: healthcare-ai-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_USER=admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+    depends_on:
+      - prometheus
+
+volumes:
+  postgres-data:
+  redis-data:
+  qdrant-data:
+  rabbitmq-data:
+  prometheus-data:
+  grafana-data:
